@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Coolweather</string>
+    <string name="app_name">酷欧天气</string>
+    <string name="url">http://guolin.tech/api/china/</string>
+
+    <string name="title_area">中国</string>
+    <string name="progress_dialog_message">正在加载</string>
+    <string name="false_for_data">加载失败</string>
 </resources>
