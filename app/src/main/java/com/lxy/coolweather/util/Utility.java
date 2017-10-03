@@ -2,9 +2,11 @@ package com.lxy.coolweather.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.lxy.coolweather.db.City;
 import com.lxy.coolweather.db.County;
 import com.lxy.coolweather.db.Province;
+import com.lxy.coolweather.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,5 +96,22 @@ public class Utility {
 
         }
         return false;
+    }
+
+    /**
+     * 解析和处理服务器返回的天气数据
+     * @param response
+     * @return
+     */
+    public static Weather handleWeatherResopnse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather5");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

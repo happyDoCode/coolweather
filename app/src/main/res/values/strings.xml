@@ -5,4 +5,18 @@
     <string name="title_area">中国</string>
     <string name="progress_dialog_message">正在加载</string>
     <string name="false_for_data">加载失败</string>
+
+    <string name="tem_or">/</string>
+
+    <string name="aqi_qlty">空气</string>
+
+    <string name="aqi_name">空气质量</string>
+    <string name="aqi_zhi">空气质量指数</string>
+    <string name="aqi_pollution">首要污染物</string>
+    <string name="aqi_pm25">PM2.5</string>
+    <string name="aqi_detail">空气质量详情</string>
+    <string name="aqi_or">|</string>
+
+    <string name="suggest">生活建议</string>
+    <string name="now_hum_name">相对湿度</string>
 </resources>
