@@ -10,6 +10,8 @@ public class DailyForecast {
 
     public String date;
 
+    public String hum;
+
     @SerializedName("tmp")
     public Temperature temperature;
 
@@ -24,7 +26,7 @@ public class DailyForecast {
 
     public class Cond{
 
-        @SerializedName("text_d")
+        @SerializedName("txt_d")
         public String info;
     }
 }

@@ -16,7 +16,12 @@
     <string name="aqi_pm25">PM2.5</string>
     <string name="aqi_detail">空气质量详情</string>
     <string name="aqi_or">|</string>
+    <string name="aqi_time">发布</string>
 
-    <string name="suggest">生活建议</string>
+    <string name="suggest">生活建议：</string>
     <string name="now_hum_name">相对湿度</string>
+    <string name="suggest_travel">旅行建议：</string>
+    <string name="suggest_car">驾车建议：</string>
+    <string name="suggest_sport">运动建议：</string>
+    <string name="suggest_dress">穿衣建议：</string>
 </resources>

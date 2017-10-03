@@ -41,7 +41,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     private LinearLayout forscastList;
 
-    private TextView aqi_weight,aqi_text,aqi_pm25_text;
+    private TextView aqi_weight,aqi_text,aqi_pm25_text,aqi_time;
 
     private TextView suggest_travel,suggest_comfort,suggest_car_wash,suggest_sport;
     @Override
@@ -72,6 +72,7 @@ public class WeatherActivity extends AppCompatActivity {
         aqi_weight = (TextView)findViewById(R.id.aqi_weight);
         aqi_text = (TextView)findViewById(R.id.aqi_text);
         aqi_pm25_text = (TextView)findViewById(R.id.aqi_pm25_text);
+        aqi_time = (TextView)findViewById(R.id.aqi_time);
 
         suggest_travel = (TextView)findViewById(R.id.suggest_travel);
         suggest_comfort = (TextView)findViewById(R.id.suggest_comfort);
@@ -117,7 +118,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.city;
-        String updateTime = weather.basic.update.loc;
+        String updateTime = weather.basic.update.loc.split(" ")[1];
 
         title_city.setText(cityName);
         title_time.setText(updateTime);
@@ -134,9 +135,9 @@ public class WeatherActivity extends AppCompatActivity {
         forscastList.removeAllViews();
         for (DailyForecast forecast : weather.DailyForecastsList) {
             View view = LayoutInflater.from(this).inflate(R.layout.item_forecast,forscastList,false);
+
             TextView date = (TextView)view.findViewById(R.id.time_for_today);
             TextView time_today_rain = (TextView)view.findViewById(R.id.time_today_rain);
-            TextView qlty = (TextView)view.findViewById(R.id.time_cond);
 
             TextView tem_max = (TextView)view.findViewById(R.id.tem_max);
             TextView tem_min = (TextView)view.findViewById(R.id.tem_min);
@@ -152,7 +153,18 @@ public class WeatherActivity extends AppCompatActivity {
         aqi_weight.setText(weather.aqi.aqiCity.qlty);
         aqi_text.setText(weather.aqi.aqiCity.aqi);
         aqi_pm25_text.setText(weather.aqi.aqiCity.pm25);
+        aqi_time.setText(updateTime+getText(R.string.aqi_time));
 
+        /**生活建议*/
+        String travel = getText(R.string.suggest_travel)+weather.suggestion.travel.info;
+        String car_wash = getText(R.string.suggest_car)+weather.suggestion.carWash.info;
+        String dress = getText(R.string.suggest_dress)+weather.suggestion.drsg.info;
+        String sprot = getText(R.string.suggest_sport)+weather.suggestion.sport.info;
+
+        suggest_travel.setText(travel);
+        suggest_car_wash.setText(car_wash);
+        suggest_sport.setText(sprot);
+        suggest_comfort.setText(dress);
 
     }
 }
