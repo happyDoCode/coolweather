@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lxy.coolweather.MainActivity;
 import com.lxy.coolweather.R;
 import com.lxy.coolweather.activity.WeatherActivity;
 import com.lxy.coolweather.db.City;
@@ -104,10 +105,17 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity = dataListCity.get(position);
                     queryCounties();
                 }else {
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("data",dataListCounty.get(position).getWeatherId());
-                    startActivity(intent);
-                    getActivity().finish();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("data", dataListCounty.get(position).getWeatherId());
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if (getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity = (WeatherActivity)getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.refreshLayout.setRefreshing(true);
+                        activity.getWeather(dataListCounty.get(position).getWeatherId());
+                    }
                 }
             }
         });

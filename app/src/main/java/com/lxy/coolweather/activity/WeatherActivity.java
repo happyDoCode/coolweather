@@ -1,14 +1,20 @@
 package com.lxy.coolweather.activity;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,28 +38,62 @@ public class WeatherActivity extends AppCompatActivity {
 
     private final static String TAG="WeatherActivity";
 
+    public DrawerLayout drawerLayout;
 
+    private ImageView drawerButton;
+
+    public SwipeRefreshLayout refreshLayout;
+
+    private ScrollView weatherLayout;
 
     private TextView title_city,title_time;
     private TextView now_degree,weather_info_text;
     private TextView now_windy_name,now_windy_num,now_hum_name,now_hum_num,now_cond_name,now_cond_num;
 
-
-    private LinearLayout forscastList;
+    private LinearLayout forecastList;
 
     private TextView aqi_weight,aqi_text,aqi_pm25_text,aqi_time;
 
     private TextView suggest_travel,suggest_comfort,suggest_car_wash,suggest_sport;
+    String weatherId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        init();
-        getWeather();
+        initView();//初始化组件
+        initData();//初始化数据
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getWeather(weatherId);
+            }
+        });
+
     }
 
-    private void init() {
+    private void initData() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String weatherString = preferences.getString("weather",null);
+        //检查缓存中是否有数据，有就直接有缓存数据，没有则去服务器获取
+        if (weatherString != null){
+            Weather weather = Utility.handleWeatherResopnse(weatherString);
+            showWeatherInfo(weather);
+        }else {
+            weatherId = getIntent().getExtras().getString("data");
+            weatherLayout.setVisibility(View.INVISIBLE);
+            getWeather(weatherId);
+        }
+    }
+
+    private void initView() {
+        drawerLayout = (DrawerLayout)findViewById(R.id.weather_drawer);
+        drawerButton = (ImageView) findViewById(R.id.title_change_area);
+        drawerButton.setOnClickListener(new MyClick());
+
+        refreshLayout = (SwipeRefreshLayout)findViewById(R.id.weather_refresh);
+        refreshLayout.setColorSchemeResources(R.color.colorPrimary);
+
         title_city = (TextView)findViewById(R.id.title_city);
         title_time = (TextView)findViewById(R.id.title_update_time);
 
@@ -67,7 +107,7 @@ public class WeatherActivity extends AppCompatActivity {
         now_cond_name = (TextView)findViewById(R.id.now_cond_name);
         now_cond_num = (TextView)findViewById(R.id.now_cond_num);
 
-        forscastList = (LinearLayout)findViewById(R.id.forecast_list);
+        forecastList = (LinearLayout)findViewById(R.id.forecast_list);
 
         aqi_weight = (TextView)findViewById(R.id.aqi_weight);
         aqi_text = (TextView)findViewById(R.id.aqi_text);
@@ -79,15 +119,35 @@ public class WeatherActivity extends AppCompatActivity {
         suggest_car_wash = (TextView)findViewById(R.id.suggest_car_wash);
         suggest_sport = (TextView)findViewById(R.id.suggest_sport);
 
-
+        weatherLayout = (ScrollView)findViewById(R.id.weather_layout);
 
     }
 
-    private void getWeather() {
-        String address = "https://free-api.heweather.com/v5/weather?city=zigong&key=12693de64b2e406c91d98d98333cd89e";
+    private class MyClick implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.title_change_area:
+                    drawerLayout.openDrawer(GravityCompat.START);
+                    drawerLayout.setScrimColor(Color.TRANSPARENT);
+            }
+        }
+    }
+
+
+    /**
+     * 从服务器中获取相应数据
+     * @param weatherId
+     */
+    public void getWeather( final String weatherId) {
+        String address = "https://free-api.heweather.com/v5/weather?city="+weatherId
+                +"&key=12693de64b2e406c91d98d98333cd89e";
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+
+                Toast.makeText(WeatherActivity.this,getText(R.string.false_for_data),Toast.LENGTH_SHORT).show();
                 Log.e(TAG,e.toString());
             }
 
@@ -107,6 +167,7 @@ public class WeatherActivity extends AppCompatActivity {
                             editor.apply();
                             showWeatherInfo(weather);
                         }else {
+                            refreshLayout.setRefreshing(false);
                             Toast.makeText(WeatherActivity.this,getText(R.string.false_for_data),Toast.LENGTH_SHORT).show();
                         }
 
@@ -116,6 +177,10 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 将各项天气数据显示在界面上
+     * @param weather
+     */
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.city;
         String updateTime = weather.basic.update.loc.split(" ")[1];
@@ -132,9 +197,9 @@ public class WeatherActivity extends AppCompatActivity {
         now_cond_name.setText(getText(R.string.aqi_qlty)+weather.aqi.aqiCity.qlty);
         now_cond_num.setText(weather.aqi.aqiCity.aqi);
 
-        forscastList.removeAllViews();
+        forecastList.removeAllViews();
         for (DailyForecast forecast : weather.DailyForecastsList) {
-            View view = LayoutInflater.from(this).inflate(R.layout.item_forecast,forscastList,false);
+            View view = LayoutInflater.from(this).inflate(R.layout.item_forecast, forecastList,false);
 
             TextView date = (TextView)view.findViewById(R.id.time_for_today);
             TextView time_today_rain = (TextView)view.findViewById(R.id.time_today_rain);
@@ -147,7 +212,7 @@ public class WeatherActivity extends AppCompatActivity {
             tem_max.setText(forecast.temperature.max);
             tem_min.setText(forecast.temperature.min);
 
-            forscastList.addView(view);
+            forecastList.addView(view);
         }
 
         aqi_weight.setText(weather.aqi.aqiCity.qlty);
@@ -166,5 +231,7 @@ public class WeatherActivity extends AppCompatActivity {
         suggest_sport.setText(sprot);
         suggest_comfort.setText(dress);
 
+        weatherLayout.setVisibility(View.VISIBLE);
+        refreshLayout.setRefreshing(false);
     }
 }
