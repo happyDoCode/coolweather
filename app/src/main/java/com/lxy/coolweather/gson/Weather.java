@@ -2,13 +2,14 @@ package com.lxy.coolweather.gson;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by 刘晓阳 on 2017/10/2.
  */
 
-public class Weather {
+public class Weather implements Serializable{
 
     public String status;
 

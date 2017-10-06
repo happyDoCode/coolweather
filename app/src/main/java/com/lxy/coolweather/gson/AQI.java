@@ -2,11 +2,13 @@ package com.lxy.coolweather.gson;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by 刘晓阳 on 2017/10/2.
  */
 
-public class AQI {
+public class AQI implements Serializable{
 
     @SerializedName("city")
     public AQICity aqiCity;

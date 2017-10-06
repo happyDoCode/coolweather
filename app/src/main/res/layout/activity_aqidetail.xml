@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    tools:context="com.lxy.coolweather.activity.AQIDetailActivity">
+
+    <TextView
+        android:id="@+id/aqi_detail_city"
+        android:layout_gravity="center_horizontal"
+        android:textSize="30sp"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/aqi_detail_time"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12sp"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+        <include layout="@layout/aqi_context" />
+
+
+            <com.lxy.coolweather.util.CircleBar
+                android:id="@+id/aqi_bar"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="130dp" />
+            <TextView
+                android:text="@string/aqi_zhi"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+    <ImageView
+        android:id="@+id/aqi_back"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="35dp"
+        android:layout_height="35dp" />
+</LinearLayout>

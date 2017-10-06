@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">酷欧天气</string>
     <string name="url">http://guolin.tech/api/china/</string>
+    <string name="weather_url">https://free-api.heweather.com/v5/weather?city=</string>
+    <string name="weather_url_key">key=12693de64b2e406c91d98d98333cd89e</string>
 
     <string name="title_area">中国</string>
     <string name="progress_dialog_message">正在加载</string>
@@ -14,9 +16,21 @@
     <string name="aqi_zhi">空气质量指数</string>
     <string name="aqi_pollution">首要污染物</string>
     <string name="aqi_pm25">PM2.5</string>
+    <string name="aqi">AQI</string>
     <string name="aqi_detail">空气质量详情</string>
     <string name="aqi_or">|</string>
     <string name="aqi_time">发布</string>
+
+    <string name="aqi_context_name">发布</string>
+    <string name="aqi_context_pm25">PM2.5</string>
+    <string name="aqi_context_pm10">PM10</string>
+    <string name="aqi_context_no2">NO₂</string>
+    <string name="aqi_context_so2">SO₂</string>
+    <string name="aqi_context_co">CO</string>
+    <string name="aqi_context_o3">O₃</string>
+    <string name="aqi_context_simple">单位：μg/m3(CO为mg/m3)</string>
+
+    <string name="weather_place">中国环境监测总站</string>
 
     <string name="suggest">生活建议：</string>
     <string name="now_hum_name">相对湿度</string>

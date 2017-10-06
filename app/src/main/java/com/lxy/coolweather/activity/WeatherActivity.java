@@ -1,5 +1,6 @@
 package com.lxy.coolweather.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 import com.lxy.coolweather.R;
 import com.lxy.coolweather.gson.DailyForecast;
 import com.lxy.coolweather.gson.Weather;
+import com.lxy.coolweather.service.AutoUpdateWeatherService;
+import com.lxy.coolweather.util.CircleBar;
 import com.lxy.coolweather.util.HttpUtil;
 import com.lxy.coolweather.util.Utility;
 
@@ -48,14 +51,16 @@ public class WeatherActivity extends AppCompatActivity {
 
     private TextView title_city,title_time;
     private TextView now_degree,weather_info_text;
-    private TextView now_windy_name,now_windy_num,now_hum_name,now_hum_num,now_cond_name,now_cond_num;
+    private TextView now_windy_name,now_windy_num,now_hum_num,now_cond_name,now_cond_num;
 
     private LinearLayout forecastList;
 
-    private TextView aqi_weight,aqi_text,aqi_pm25_text,aqi_time;
+    private TextView aqi_weight,aqi_time,aqi_detail_text;
+    private CircleBar aqi_text,aqi_pm25_text;
 
     private TextView suggest_travel,suggest_comfort,suggest_car_wash,suggest_sport;
     String weatherId;
+    Weather weather = new Weather();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +82,8 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherString = preferences.getString("weather",null);
         //检查缓存中是否有数据，有就直接有缓存数据，没有则去服务器获取
         if (weatherString != null){
-            Weather weather = Utility.handleWeatherResopnse(weatherString);
+            weather = Utility.handleWeatherResopnse(weatherString);
+            weatherId = weather.basic.id;
             showWeatherInfo(weather);
         }else {
             weatherId = getIntent().getExtras().getString("data");
@@ -102,7 +108,6 @@ public class WeatherActivity extends AppCompatActivity {
 
         now_windy_name = (TextView)findViewById(R.id.now_windy_name);
         now_windy_num = (TextView)findViewById(R.id.now_windy_num);
-        now_hum_name = (TextView)findViewById(R.id.now_hum_name);
         now_hum_num = (TextView)findViewById(R.id.now_hum_num);
         now_cond_name = (TextView)findViewById(R.id.now_cond_name);
         now_cond_num = (TextView)findViewById(R.id.now_cond_num);
@@ -110,9 +115,11 @@ public class WeatherActivity extends AppCompatActivity {
         forecastList = (LinearLayout)findViewById(R.id.forecast_list);
 
         aqi_weight = (TextView)findViewById(R.id.aqi_weight);
-        aqi_text = (TextView)findViewById(R.id.aqi_text);
-        aqi_pm25_text = (TextView)findViewById(R.id.aqi_pm25_text);
+        aqi_text = (CircleBar)findViewById(R.id.aqi_text);
+        aqi_pm25_text = (CircleBar)findViewById(R.id.aqi_pm25_text);
         aqi_time = (TextView)findViewById(R.id.aqi_time);
+        aqi_detail_text = (TextView)findViewById(R.id.aqi_detail_text);
+        aqi_detail_text.setOnClickListener(new MyClick());
 
         suggest_travel = (TextView)findViewById(R.id.suggest_travel);
         suggest_comfort = (TextView)findViewById(R.id.suggest_comfort);
@@ -131,6 +138,10 @@ public class WeatherActivity extends AppCompatActivity {
                 case R.id.title_change_area:
                     drawerLayout.openDrawer(GravityCompat.START);
                     drawerLayout.setScrimColor(Color.TRANSPARENT);
+                    break;
+                case R.id.aqi_detail_text:
+                    Intent intent = new Intent(WeatherActivity.this,AQIDetailActivity.class);
+                    startActivity(intent);
             }
         }
     }
@@ -141,7 +152,7 @@ public class WeatherActivity extends AppCompatActivity {
      * @param weatherId
      */
     public void getWeather( final String weatherId) {
-        String address = "https://free-api.heweather.com/v5/weather?city="+weatherId
+        String address = "https://free-api.heweather.com/v5/weather?city="+ weatherId
                 +"&key=12693de64b2e406c91d98d98333cd89e";
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
@@ -155,8 +166,8 @@ public class WeatherActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 final String text = response.body().string();
 
-                final Weather weather = Utility.handleWeatherResopnse(text);
-                Log.i(TAG,weather.status);
+                weather = Utility.handleWeatherResopnse(text);
+                Log.i(TAG,weather.status + "    weatherId:" +weatherId);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -191,7 +202,7 @@ public class WeatherActivity extends AppCompatActivity {
         now_degree.setText(weather.now.temperature+"℃");
         weather_info_text.setText(weather.now.more.info);
 
-        now_hum_num.setText(weather.now.hum);
+        now_hum_num.setText(weather.now.hum+"%");
         now_windy_name.setText(weather.now.wind.dir);
         now_windy_num.setText(weather.now.wind.spd);
         now_cond_name.setText(getText(R.string.aqi_qlty)+weather.aqi.aqiCity.qlty);
@@ -216,8 +227,17 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         aqi_weight.setText(weather.aqi.aqiCity.qlty);
+
         aqi_text.setText(weather.aqi.aqiCity.aqi);
+        float sweep = Float.parseFloat(weather.aqi.aqiCity.aqi);
+        aqi_text.setSweepAngle(sweep);
+        aqi_text.setDesText(getText(R.string.aqi).toString());
+
+        sweep = Float.parseFloat(weather.aqi.aqiCity.pm25);
+        aqi_pm25_text.setSweepAngle(sweep);
         aqi_pm25_text.setText(weather.aqi.aqiCity.pm25);
+        aqi_pm25_text.setDesText(getText(R.string.aqi_pm25).toString());
+
         aqi_time.setText(updateTime+getText(R.string.aqi_time));
 
         /**生活建议*/
@@ -233,5 +253,7 @@ public class WeatherActivity extends AppCompatActivity {
 
         weatherLayout.setVisibility(View.VISIBLE);
         refreshLayout.setRefreshing(false);
+        Intent intent = new Intent(this, AutoUpdateWeatherService.class);
+        startService(intent);
     }
 }
