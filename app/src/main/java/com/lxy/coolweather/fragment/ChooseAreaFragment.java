@@ -21,6 +21,7 @@ import com.lxy.coolweather.R;
 import com.lxy.coolweather.activity.WeatherActivity;
 import com.lxy.coolweather.db.City;
 import com.lxy.coolweather.db.County;
+import com.lxy.coolweather.db.Place;
 import com.lxy.coolweather.db.Province;
 import com.lxy.coolweather.util.HttpUtil;
 import com.lxy.coolweather.util.Utility;
@@ -46,6 +47,7 @@ public class ChooseAreaFragment extends Fragment {
     private static final int LEVEL_CITY = 1;
     private static final int LEVEL_COUNTY = 2;
     private static final String TAG = "ChooseAreaFragment";
+
 
     private Button backButton;
 
@@ -104,7 +106,12 @@ public class ChooseAreaFragment extends Fragment {
                 }else if (currentLevel == LEVEL_CITY){
                     selectedCity = dataListCity.get(position);
                     queryCounties();
-                }else {
+                }else if (currentLevel == LEVEL_COUNTY){
+
+                    County county = dataListCounty.get(position);
+
+                    addPlace(county);
+
                     if (getActivity() instanceof MainActivity) {
                         Intent intent = new Intent(getActivity(), WeatherActivity.class);
                         intent.putExtra("data", dataListCounty.get(position).getWeatherId());
@@ -135,6 +142,19 @@ public class ChooseAreaFragment extends Fragment {
 
     }
 
+    private void addPlace(County county) {
+        List<Place> queryPlace = DataSupport.select("weatherId")
+                .where("weatherId = ?",county.getWeatherId())
+                .find(Place.class);
+        if (queryPlace.size() != 1){
+            Place place = new Place();
+
+            place.setWeatherId(county.getWeatherId());
+            place.setCountyName(county.getCountyName());
+            place.setLocal(0);
+            place.save();
+        }
+    }
 
 
     /**

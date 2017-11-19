@@ -94,6 +94,7 @@ public class CircleBar extends View {
         anim.setDuration(TIME);
     }
 
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int height = getDefaultSize(getSuggestedMinimumHeight(),
                 heightMeasureSpec);
@@ -108,12 +109,15 @@ public class CircleBar extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawArc(mColorWheelRectangle, -225, 270, false, mDefaultWheelPaint);//画外接的圆环
-        canvas.drawArc(mColorWheelRectangle, -225, mSweepAnglePer, false, mColorWheelPaint);//画圆环
-        Rect bounds = new Rect();
-        String textstr = mCount + "";
+        //画外接的圆环
+        canvas.drawArc(mColorWheelRectangle, -225, 270, false, mDefaultWheelPaint);
+        //画圆环
+        canvas.drawArc(mColorWheelRectangle, -225, mSweepAnglePer, false, mColorWheelPaint);
 
-        textPaint.getTextBounds(textstr, 0, textstr.length(), bounds);
+        Rect bounds = new Rect();
+        String textStr = mCount + "";
+
+        textPaint.getTextBounds(textStr, 0, textStr.length(), bounds);
         textDesPaint.getTextBounds(mTextDes, 0, mTextDes.length(), bounds);
 
 
@@ -124,9 +128,9 @@ public class CircleBar extends View {
                 , textDesPaint);
         // drawText各个属性的意思(文字,x坐标,y坐标,画笔)
         canvas.drawText(
-                textstr + "",
+                textStr + "",
                 (mColorWheelRectangle.centerX())
-                        - (textPaint.measureText(textstr) / 2),
+                        - (textPaint.measureText(textStr) / 2),
                 mColorWheelRectangle.centerY() + bounds.height() / 2 ,
                 textPaint);
     }
@@ -173,10 +177,11 @@ public class CircleBar extends View {
 
         }
 
-        //        * 动画类利用了applyTransformation参数中的interpolatedTime参数(从0到1)的变化特点，
-//                * 实现了该View的某个属性随时间改变而改变。原理是在每次系统调用animation的applyTransformation()方法时，
-//                * 改变mSweepAnglePer，mCount的值，
-//                * 然后调用postInvalidate()不停的绘制view。
+       /** 动画类利用了applyTransformation参数中的interpolatedTime参数(从0到1)的变化特点，
+        * 实现了该View的某个属性随时间改变而改变。原理是在每次系统调用animation的applyTransformation()方法时，
+        * 改变mSweepAnglePer，mCount的值，
+        * 然后调用postInvalidate()不停的绘制view。
+        */
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             super.applyTransformation(interpolatedTime, t);

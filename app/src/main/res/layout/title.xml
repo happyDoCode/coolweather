@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#ffffff"
-
+    android:background="@color/colorTran"
+    android:minHeight="?attr/actionBarSize"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <ImageView
-        android:id="@+id/title_change_area"
-        android:src="@drawable/home"
-        android:layout_alignParentLeft="true"
+        android:id="@+id/title_update_time"
+        android:textSize="16sp"
+        android:src="@drawable/dots_vertical"
+        android:layout_marginEnd="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_width="30dp"
         android:layout_height="30dp" />
 
+
     <TextView
         android:id="@+id/title_city"
-        android:textSize="20sp"
+        android:textSize="28sp"
         android:layout_centerInParent="true"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/title_update_time"
-        android:textSize="16sp"
-        android:layout_marginEnd="15dp"
+        android:id="@+id/title_change_area"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="15dp"
+        android:text="@string/change_city"
+        android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+
 </RelativeLayout>

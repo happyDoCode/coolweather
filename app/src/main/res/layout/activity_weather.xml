@@ -2,42 +2,44 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:background="#DCDCDC"
+    android:id="@+id/weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/weather_drawer"
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/weather_refresh"
+            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ScrollView
                 android:id="@+id/weather_layout"
+                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:orientation="vertical"
+                    android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <include layout="@layout/title" />
-                    <include layout="@layout/weather_now" />
-                    <include layout="@layout/weather_now_detail" />
+                    <include layout="@layout/weather_title" />
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_marginTop="15dp"
+                    <com.lxy.coolweather.util.MyListView
+                        android:layout_marginTop="10dp"
                         android:background="#ffffff"
                         android:id="@+id/forecast_list"
+                        android:listSelector="@android:color/transparent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
-                    </LinearLayout>
+                    </com.lxy.coolweather.util.MyListView>
 
                     <include layout="@layout/weather_aqi" />
                     <include layout="@layout/weather_suggest" />
@@ -53,6 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+
     </android.support.v4.widget.DrawerLayout>
+
 
 </FrameLayout>

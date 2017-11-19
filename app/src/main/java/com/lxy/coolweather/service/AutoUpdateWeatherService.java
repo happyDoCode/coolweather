@@ -9,7 +9,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.lxy.coolweather.R;
 import com.lxy.coolweather.gson.Weather;
@@ -57,7 +56,6 @@ public class AutoUpdateWeatherService extends Service {
             HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Toast.makeText(AutoUpdateWeatherService.this,getText(R.string.false_for_data),Toast.LENGTH_SHORT).show();
                     Log.e("autoService",e.toString());
                 }
 

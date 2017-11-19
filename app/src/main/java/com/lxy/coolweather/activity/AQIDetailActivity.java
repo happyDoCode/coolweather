@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxy.coolweather.R;
@@ -15,9 +17,9 @@ import com.lxy.coolweather.util.Utility;
 public class AQIDetailActivity extends AppCompatActivity {
 
     private CircleBar circleBar;
-    private TextView cityName,titleTime;
     private TextView aqiQlty;
     private TextView aqi_pm25,aqi_pm10,aqi_no2,aqi_co,aqi_o3,aqi_so2;
+    private ImageView imageBack;
     private Weather weather;
 
     @Override
@@ -34,12 +36,14 @@ public class AQIDetailActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        cityName = (TextView)findViewById(R.id.aqi_detail_city);
-        titleTime = (TextView)findViewById(R.id.aqi_detail_time);
 
-        cityName.setText(weather.basic.city);
-        String updateTime = weather.basic.update.loc.split(" ")[1];
-        titleTime.setText(getText(R.string.weather_place) + updateTime +getText(R.string.aqi_time));
+        imageBack = (ImageView)findViewById(R.id.aqi_back);
+        imageBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         aqiQlty = (TextView)findViewById(R.id.aqi_content);
         aqi_pm25 = (TextView)findViewById(R.id.aqi_content_pm25);
